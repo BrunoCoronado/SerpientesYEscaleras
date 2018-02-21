@@ -13,9 +13,10 @@ import java.util.Scanner;
  * @author bruno
  */
 public class Gestion{
+    Scanner scanner = new Scanner(System.in);
+    
     public ArrayList<String> ingresarJugadores(){
         ArrayList<String> jugadores = new ArrayList<>();
-        Scanner scanner = new Scanner(System.in);
         
         for(int contadorJugadores = 0;contadorJugadores<3;contadorJugadores++)
         {
@@ -35,4 +36,15 @@ public class Gestion{
                  
     return jugadores;
     }   
+
+    public ArrayList<String> ingresarEscalerasYSerpientes() {
+        ArrayList<String> escalerasYSerpientes = new ArrayList<>(); 
+        
+        System.out.println("Ingrese las serpientes en el formato x1,y1;x2,y2;x3,y3");
+        escalerasYSerpientes.add(scanner.nextLine());
+        System.out.println("Ingrese las escaleres en el formato x1,y1;x2,y2;x3,y3");
+        escalerasYSerpientes.add(scanner.nextLine());        
+        
+        return escalerasYSerpientes;
+    }
 }
