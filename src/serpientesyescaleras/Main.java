@@ -5,7 +5,7 @@
  */
 package serpientesyescaleras;
 
-import serpientesyescaleras.sistema.Menu;
+import serpientesyescaleras.sistema.Juego;
 
 /**
  *
@@ -17,8 +17,8 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Menu menu = new Menu();
-        menu.menuPrincipal();
+        Juego menu = new Juego();
+        menu.inicializar();
     }
     
 }

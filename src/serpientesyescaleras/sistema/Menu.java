@@ -13,30 +13,20 @@ import java.util.Scanner;
  */
 public class Menu {
     
-    public void menuPrincipal(){
+    public int menuPrincipal(){
         
         System.out.println("1. Iniciar Juego");
         System.out.println("2. Regresar al Juego");
-        System.out.println("1. Salir");
+        System.out.println("3. Salir");
         
         Scanner scanner = new Scanner(System.in);
         
         try {
-            switch(scanner.nextInt())
-            {
-                case 1:
-                    break;
-                case 2:
-                    break;
-                case 3:
-                    System.exit(0);
-                default:
-                    System.out.println("Seleccione alguna de las 3 opciones disponibles");
-                    menuPrincipal();
-            }
+            return scanner.nextInt();
         } catch (Exception e) {
             System.out.println("Ingrese solo numeros.");
             menuPrincipal();
         }
+        return 0;
     }    
 }
