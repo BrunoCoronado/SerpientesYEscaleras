@@ -12,13 +12,12 @@ import java.util.ArrayList;
  * @author bruno
  */
 public class Juego {
+    private Menu menu = new Menu();
+    private Gestion gestion = new Gestion();
+    private ArrayList<String> jugadores;
+    private ArrayList<String> escalerasYSerpientes;
     
-    public void inicializar(){
-        Menu menu = new Menu();
-        Gestion gestion = new Gestion();
-        ArrayList<String> jugadores;
-        ArrayList<String> escalerasYSerpientes;
-        
+    public void inicializar(){     
         switch(menu.menuPrincipal())
         {
             case 1:
@@ -32,28 +31,19 @@ public class Juego {
                 System.exit(0);
             default:
             System.out.println("Seleccione alguna de las 3 opciones disponibles");
-            menu.menuPrincipal();
+            inicializar();
         }
     }
 
-    private void iniciarJuego(ArrayList<String> escalerasYSerpientes) {
-        String[][] tablero = new String[10][10];
-        
-        for(int i=0;i<10;i++){
-            for(int j=0;j<10;j++){
-                tablero[i][j]=" ";                
-                tablero[i][j]=" ";
-            }
-        }
-        
+    private void iniciarJuego(String[][] tablero) {
         System.out.println("Turno del jugador\tRonda:");
         System.out.println("-----------------------------------------------------------------------");
-        for (int coordenadaX=0;coordenadaX<10;coordenadaX++) {                        
-            for (int coordenadaY=0;coordenadaY<10;coordenadaY++) {
+        for (int coordenadaX=9;coordenadaX>-1;coordenadaX--) {                        
+            for (int coordenadaY=9;coordenadaY>-1;coordenadaY--) {
                 if (coordenadaX==0 && coordenadaY==0) {
-                    System.out.print("|"+"*"+"1"+","+"2"+",3");
+                    System.out.print("|"+"1"+","+"2"+",3"+"*");
                 }else if (coordenadaX==9 && coordenadaY==9) {
-                    System.out.print("|"+" "+" "+" "+"  "+"$");
+                    System.out.print("|"+"$"+" "+" "+" "+"  ");
                 }else{
                     System.out.print("|"+" "+tablero[coordenadaX][coordenadaY]+" "+tablero[coordenadaX][coordenadaY]+" "+tablero[coordenadaX][coordenadaY]);                
                 }
