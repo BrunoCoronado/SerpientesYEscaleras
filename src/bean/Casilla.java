@@ -12,7 +12,9 @@ package bean;
  */
 public class Casilla {
     private String contenido;
-    private String jugadores;
+    private String jugador1;
+    private String jugador2;
+    private String jugador3;
 
     public String getContenido() {
         return contenido;
@@ -22,19 +24,39 @@ public class Casilla {
         this.contenido = contenido;
     }
 
-    public String getJugadores() {
-        return jugadores;
+    public String getJugador1() {
+        return jugador1;
     }
 
-    public void setJugadores(String jugadores) {
-        this.jugadores = jugadores;
+    public void setJugador1(String jugador1) {
+        this.jugador1 = jugador1;
+    }
+
+    public String getJugador2() {
+        return jugador2;
+    }
+
+    public void setJugador2(String jugador2) {
+        this.jugador2 = jugador2;
+    }
+
+    public String getJugador3() {
+        return jugador3;
+    }
+
+    public void setJugador3(String jugador3) {
+        this.jugador3 = jugador3;
+    }
+
+    public Casilla(String contenido, String jugador1, String jugador2, String jugador3) {
+        this.contenido = contenido;
+        this.jugador1 = jugador1;
+        this.jugador2 = jugador2;
+        this.jugador3 = jugador3;
     }
 
     public Casilla() {
     }
-
-    public Casilla(String contenido, String jugadores) {
-        this.contenido = contenido;
-        this.jugadores = jugadores;
-    }  
+    
+    
 }

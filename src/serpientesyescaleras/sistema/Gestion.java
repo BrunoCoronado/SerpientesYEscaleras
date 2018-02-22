@@ -13,8 +13,7 @@ import java.util.Scanner;
  * @author bruno
  */
 public class Gestion{
-    private Scanner scanner = new Scanner(System.in);    
-    private String[][] tablero = new String[10][10];    
+    private Scanner scanner = new Scanner(System.in);   
     
     public ArrayList<String> ingresarJugadores(){
         ArrayList<String> jugadores = new ArrayList<>();
@@ -33,46 +32,34 @@ public class Gestion{
                 }       
             }            
             jugadores.add(scanner.nextLine());   
-        }   
-                 
+        }              
     return jugadores;
     }   
 
-    public String[][] ingresarEscalerasYSerpientes() {
-        ArrayList<String[]> escalerasYSerpientes = new ArrayList<>(); 
-        inicializarMatriz();
+    public void ingresarEscalerasYSerpientes() {
             
         System.out.println("Ingrese las serpientes en el formato x1,y1;x2,y2;x3,y3");
-        String[] serpientes = ((scanner.nextLine())).split(";");
-        
+        String[] serpientes = ((scanner.nextLine())).split(";");        
         coordenadasEscalerasSerpientes(serpientes, "S");
         
         System.out.println("Ingrese las escaleres en el formato x1,y1;x2,y2;x3,y3");
-        String[] escaleras = ((scanner.nextLine())).split(";");  
-        
-        coordenadasEscalerasSerpientes(escaleras, "E");      
-        
-        return tablero;
+        String[] escaleras = ((scanner.nextLine())).split(";");          
+        coordenadasEscalerasSerpientes(escaleras, "E");              
     }
 
     private void coordenadasEscalerasSerpientes(String[] parejaCoordenadas, String contenido) {
+        try {
+            for(int posicionVector = 0; posicionVector < parejaCoordenadas.length; posicionVector++) {            
+                String[] coordenadaIndividual = parejaCoordenadas[posicionVector].split(",");         
+                for (int coordenada = 0; coordenada < (coordenadaIndividual.length/2); coordenada=coordenada+2) {
+                    Juego.tablero[Integer.parseInt(coordenadaIndividual[coordenada+1])-1][Integer.parseInt(coordenadaIndividual[coordenada])-1].setContenido(contenido); 
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("formato incorrecto, ingrese solo numeros");
+            ingresarEscalerasYSerpientes();
+        }
         
-        for(int i = 0; i < parejaCoordenadas.length; i++) {
-            String[] coordenadas = parejaCoordenadas[i].split(",");
-            for (int j = 0; j < (coordenadas.length/2); j=j+2) {
-                tablero[Integer.parseInt(coordenadas[j+1])-1][Integer.parseInt(coordenadas[j])-1] = contenido;
-            }
-        }
+        
     }
-
-    private void inicializarMatriz() {
-        for(int i=0;i<10;i++){
-            for(int j=0;j<10;j++){
-                tablero[i][j]=" ";                
-                tablero[i][j]=" ";
-            }
-        }
-    }
-    
-    
 }

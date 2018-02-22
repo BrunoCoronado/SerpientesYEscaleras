@@ -11,16 +11,11 @@ import java.util.Scanner;
  *
  * @author bruno
  */
-public class Menu {
+public class Menu {    
+    Scanner scanner = new Scanner(System.in);
     
     public int menuPrincipal(){
-        
-        System.out.println("1. Iniciar Juego");
-        System.out.println("2. Regresar al Juego");
-        System.out.println("3. Salir");
-        
-        Scanner scanner = new Scanner(System.in);
-        
+        System.out.println("1. Iniciar Juego\n2. Regresar al Juego\n3. Salir");        
         try {
             return scanner.nextInt();
         } catch (Exception e) {
@@ -28,5 +23,17 @@ public class Menu {
             menuPrincipal();
         }
         return 0;
-    }    
+    }
+
+    public int menuMovimiento(){
+        System.out.println("1. Tirar dado\n2. movimiento libre");
+        
+        try {
+            return scanner.nextInt();
+        } catch (Exception e) {
+            System.out.println("Ingrese solo numeros.");
+            menuMovimiento();
+        }
+        return 0;
+    }
 }
