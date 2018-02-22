@@ -26,9 +26,8 @@ public class Menu {
     }
 
     public int menuMovimiento(){
-        System.out.println("1. Tirar dado\n2. movimiento libre");
-        
         try {
+            System.out.println("1. Tirar dado\n2. movimiento libre");
             return scanner.nextInt();
         } catch (Exception e) {
             System.out.println("Ingrese solo numeros.");
