@@ -27,10 +27,16 @@ public class Menu {
 
     public int menuMovimiento(){
         try {
-            System.out.println("1. Tirar dado\n2. movimiento libre");
-            return scanner.nextInt();
+            String opcion = "";
+            System.out.println("1. Tirar dado\n2. movimiento libre\t\t ***ingrese 'j' para terminar turno.");
+            opcion = scanner.nextLine();            
+            opcion = (opcion.equals(""))?scanner.nextLine():opcion;            
+            if(opcion.equals("j")){
+                return 0;
+            }
+            return Integer.parseInt(opcion);
         } catch (Exception e) {
-            System.out.println("Ingrese solo numeros.");
+            System.out.println("Ingrese solo numeros, ò terminar turno");
             menuMovimiento();
         }
         return 0;

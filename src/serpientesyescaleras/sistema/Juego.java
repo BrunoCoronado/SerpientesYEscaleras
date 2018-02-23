@@ -79,9 +79,8 @@ public class Juego {
         Integer turno=null;
         if(ronda==1){
             turno = AsignarTurno();
-        }
-        
-        System.out.println("\nTurno del jugador:"+jugador+"\tRonda:"+ronda);
+        }        
+        System.out.println("\nTurno del jugador:"+jugador+"\t\t\t\t\tRonda:"+ronda);
         System.out.println("-----------------------------------------------------------------------");
         for (int coordenadaX=9;coordenadaX>-1;coordenadaX--) {                        
             for (int coordenadaY=9;coordenadaY>-1;coordenadaY--) {
@@ -91,6 +90,7 @@ public class Juego {
             System.out.print("|");
             System.out.print("\n-----------------------------------------------------------------------\n");
         }
+        ronda = ronda + 1;
         if(turno!=null){
             return turno;
         }
@@ -98,8 +98,11 @@ public class Juego {
     }
 
     private void movimiento(int jugador) {
-        ronda = ronda + 1;
         switch(menu.menuMovimiento()){
+            case 0:
+                int siguienteJugador = cambiarParametros(jugador);
+                generarTablero();      
+                movimiento(siguienteJugador);   
             case 1:
                 moverJugador(tirarDado(), jugador);
                 break;
@@ -119,7 +122,7 @@ public class Juego {
         String jugadoresParados = "";
         String jugadorMovido = "";        
         int siguienteJugador = 0;
-        
+        System.out.println("\nMovimiento: "+movimiento+" casillas para "+this.jugador);
         switch(jugador){
             case 1:
                 jugadorMovido = "1";
@@ -140,13 +143,16 @@ public class Juego {
                 this.jugador=jugadores.get(0);
                 break;
         }
-        
-        algoritmoMovimiento(movimiento,jugador,jugadorMovido,jugadoresParados);
+        algoritmoMovimientoAleatorio(movimiento,jugador,jugadorMovido,jugadoresParados);
         generarTablero();      
         movimiento(siguienteJugador);        
     }
     
-    public void algoritmoMovimiento(int movimiento,int jugador,String jugadorMovido, String jugadoresParados){
+    public void DatosCasilla(){
+    
+    }
+    
+    public void algoritmoMovimientoAleatorio(int movimiento,int jugador,String jugadorMovido, String jugadoresParados){
         end:
             for (int coordenadaY = 0; coordenadaY < 10; coordenadaY++) {
                 for (int coordenadaX = 0; coordenadaX < 10; coordenadaX++) {
@@ -171,7 +177,6 @@ public class Juego {
                                     organizarCasilla(coordenadaX, coordenadaY, jugadoresParados, jugador);
                                     break end;
                                 }else{
-
                                     ejecutarMovimiento(coordenadaX+(movimiento-10), subir,jugadorMovido,jugador);
                                     organizarCasilla(coordenadaX, coordenadaY, jugadoresParados, jugador);
                                     break end;
@@ -194,12 +199,27 @@ public class Juego {
     }
     
     public void ejecutarMovimiento(int coordenadaX, int coordenadaY,String jugadorMovido,int jugador){
-         tablero[coordenadaY][coordenadaX].setMoverJugador(jugadorMovido, jugador);
+        tablero[coordenadaY][coordenadaX].setMoverJugador(jugadorMovido, jugador);
         tablero[coordenadaY][coordenadaX].setGeneral(tablero[coordenadaY][coordenadaX].getGeneral()+""+String.valueOf(jugador));  
     }
     
     public void organizarCasilla(int coordenadaX, int coordenadaY,String jugadorParado,int jugador){
         tablero[coordenadaY][coordenadaX].setMoverJugador(jugadorParado, jugador);
         tablero[coordenadaY][coordenadaX].setGeneral((tablero[coordenadaY][coordenadaX].getGeneral()).replace(String.valueOf(jugador), " "));  
+    }
+
+    private int cambiarParametros(int jugador) {
+       switch(jugador){
+            case 1:
+                this.jugador = jugadores.get(1);
+                return 2;
+            case 2:
+                this.jugador = jugadores.get(2);
+                return 3;
+            case 3:
+                this.jugador = jugadores.get(0);
+                return 1;
+        }
+        return 0;
     }
 }
