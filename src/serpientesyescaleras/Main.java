@@ -17,9 +17,9 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Juego menu = new Juego();
+        Juego juego = new Juego();
         Juego.inicializarMatriz();
-        menu.inicializar();
+        juego.inicializar();
     }
     
 }
