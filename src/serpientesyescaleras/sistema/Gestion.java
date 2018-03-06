@@ -1,4 +1,4 @@
-/*
+ /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -6,7 +6,6 @@
 package serpientesyescaleras.sistema;
 
 import bean.Casilla;
-import java.util.Random;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -18,61 +17,46 @@ import static serpientesyescaleras.sistema.Juego.tablero;
  */
 public class Gestion{
     private Scanner scanner = new Scanner(System.in);   
-    private boolean serpiente = true;
+    public boolean serpiente = true;
+    public String[] jugadores = null;
     
     public String[] ingresarJugadores(){
-        String[] jugadores = null;
+        int opcion = 0;
         System.out.println("jugar con: \n1) 2 Jugadores\n2) 3 Jugadores");
-        try{
-            switch(scanner.nextInt()){
-                case 1:
+            switch(scanner.nextLine()){
+                case "1":
                     jugadores = new String[2];
                     break;
-                case 2:
+                case "2":
                     jugadores = new String[3]; 
                     break;
                 default:
+                    System.out.println("Seleccione alguna de las 3 opciones disponibles");
                     ingresarJugadores();
+                    return jugadores;
             }
-        }catch(Exception e){
-            System.out.println("ingrese solo numeros.");
-            ingresarJugadores();
-        }
             
-        
         for(int contadorJugadores = 0;contadorJugadores<jugadores.length;contadorJugadores++){
             System.out.println("Ingrese el jugador ");
-//            String ingreso = scanner.nextLine();
             String jugador = scanner.nextLine();
             jugador = (jugador.equals(""))?scanner.nextLine():jugador;
             jugadores[contadorJugadores]=jugador;
-            /*if(contadorJugadores==2){
-                System.out.println("**Enter para jugar con dos jugadores");                 
-                String ingreso = scanner.nextLine();
-                if (ingreso.equals("")) {
-                    return jugadores;
-                }else{
-                    jugadores.add(ingreso);  
-                    break;
-                }       
-            } */           
-            //jugadores[contadorJugadores] = scanner.nextLine();   
-        }              
-    return jugadores;
+        }
+        return jugadores;
     }   
 
     public void ingresarEscalerasYSerpientes() {
         if(this.serpiente){
-            System.out.println("Ingrese las serpientes en el formato x1,y1;x2,y2;x3,y3\n***(no validas en el borde inferior)");
+            System.out.println("Ingrese las serpientes en el formato x1,y1;x2,y2;x3,y3\n***(no validas en el borde inferior)\n***Cordeenadas ya ocupadas se dercartan");
             String[] serpientes = ((scanner.nextLine())).split(";");        
             coordenadasEscalerasSerpientes(serpientes, "S");
         }else{
-            System.out.println("Ingrese las escaleras en el formato x1,y1;x2,y2;x3,y3\n***(no validas en el borde superior)");
+            System.out.println("Ingrese las escaleras en el formato x1,y1;x2,y2;x3,y3\n***(no validas en el borde superior)\n***Cordeenadas ya ocupadas se dercartan");
             String[] escaleras = ((scanner.nextLine())).split(";");          
             coordenadasEscalerasSerpientes(escaleras, "E");              
         }
     }
-    //deberia ir en juego
+    
     private int coordenadasEscalerasSerpientes(String[] parejaCoordenadas, String contenido) {
         try {
             Pattern pattern;
@@ -86,34 +70,40 @@ public class Gestion{
                 String coordenadaFilaColumna = parejaCoordenadas[posicionVector];
                 Matcher matcher = pattern.matcher(coordenadaFilaColumna);
                 if (matcher.matches()) {
-                    String[] coordenadaIndividual = parejaCoordenadas[posicionVector].split(",");                             
-                    agregarSerpientesYEscalerasAlTablero(coordenadaIndividual,contenido);
-                    //parejaCoordenadas = null;
+                    if(parejaCoordenadas[posicionVector].contains("0,0")||parejaCoordenadas[posicionVector].contains("9,9")){
+                        reiniciarSerpientesYEscaleras();
+                        parejaCoordenadas = null;
+                        break end;
+                    }else{
+                        String[] coordenadaIndividual = parejaCoordenadas[posicionVector].split(",");                             
+                        agregarSerpientesYEscalerasAlTablero(coordenadaIndividual,contenido);
+                    }
                 } else {                    
-                    System.out.println("formato incorrecto o posicion invalida");
-                    limpiarEscalerasYSerpientes();
+                    reiniciarSerpientesYEscaleras();
                     parejaCoordenadas = null;
-                    ingresarEscalerasYSerpientes();
                     break end;
                 }
             }
-            //agregarSerpientesYEscalerasAlTablero(coordenadaIndividual,contenido);
             if(this.serpiente){
                 this.serpiente=false;
                 ingresarEscalerasYSerpientes();
             }            
         } catch (Exception e) {
-            System.out.println("formato incorrecto");
-            limpiarEscalerasYSerpientes();
-            ingresarEscalerasYSerpientes();
+            reiniciarSerpientesYEscaleras();
         }
         return 0;
+    }
+    
+    public void reiniciarSerpientesYEscaleras(){
+        System.out.println("formato incorrecto o posición invalida");
+        limpiarEscalerasYSerpientes();
+        ingresarEscalerasYSerpientes();
     }
     
     public void agregarSerpientesYEscalerasAlTablero(String[] serpientesYEscaleras, String contenido){
         for (int coordenada = 0; coordenada < (serpientesYEscaleras.length/2); coordenada=coordenada+2) {
                 String cont = Juego.tablero[Integer.parseInt(serpientesYEscaleras[coordenada])][Integer.parseInt(serpientesYEscaleras[coordenada+1])].getContenido();
-                if(cont.contains(" ")||cont.contains("S")||cont.contains("E")){
+                if(cont.contains(" ")){
                     Juego.tablero[Integer.parseInt(serpientesYEscaleras[coordenada])][Integer.parseInt(serpientesYEscaleras[coordenada+1])].setContenido(contenido); 
                 }
             }

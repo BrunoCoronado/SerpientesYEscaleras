@@ -7,7 +7,6 @@ package serpientesyescaleras.sistema;
 
 import bean.Casilla;
 import java.util.Random;
-import serpientesyescaleras.Main;
 /**
  *
  * @author bruno
@@ -20,18 +19,31 @@ public class Juego {
     private String jugador = "";    
     private String[] jugadores;
     public static Casilla[][] tablero = new Casilla[10][10]; 
+    private boolean partidaEnJuego = false;
+    private boolean movimientoFinal = false;
     
     public void inicializar(){
         switch(menu.menuPrincipal()){
             case 1:
-                //jugadores = gestion.ingresarJugadores();
+                inicializarMatriz();
+                gestion.jugadores = null;
+                ronda = 1;
                 AsignarTurno(gestion.ingresarJugadores());
                 gestion.ejemploTablero();
                 gestion.ingresarEscalerasYSerpientes();
+                gestion.serpiente = true;
                 iniciarJuego();
                 break;
             case 2:
-                
+                //verificar partida existente
+                if(partidaEnJuego){
+                    //continuar flujo del juego
+                    movimiento(generarTablero());
+                    //generarTablero();
+                }else{
+                    System.out.println("no hay partida en juego");
+                    inicializar();
+                }
             case 3:
                 System.exit(0);
             default:
@@ -54,24 +66,13 @@ public class Juego {
         }
     }
 
-    public void iniciarJuego() {        
+    public void iniciarJuego() {    
+        partidaEnJuego = true;
         //generarTablero();        
         movimiento(generarTablero());
     }
     
     private void AsignarTurno(String[] jugadoresIngresados) {
-        /*switch(1+numeroAleatorio.nextInt(3)){
-            case 1:
-                jugador = jugadores.get(0);1
-                return 1;
-            case 2:
-                jugador = jugadores.get(1);
-                return 2;
-            case 3:
-                jugador = jugadores.get(2);
-                return 3;
-        }
-        return 0;*/
         int j1=0;
         int j2=0;
         int j3=0;
@@ -103,13 +104,7 @@ public class Juego {
             jugadores[1]=jugadoresIngresados[j2];
             jugadores[2]=jugadoresIngresados[j3];
         }
-        
-        
         System.out.println("Orden de los turnos:");
-        
-        
-        
-        
         for(int i=0;i<jugadoresIngresados.length;i++){  
             System.out.println((i+1)+") "+jugadores[i]+" ficha " +(i+1));
         }
@@ -117,10 +112,6 @@ public class Juego {
     }
     
     private int generarTablero(){
-        /*Integer turno=null;
-        if(ronda==1){
-            turno = AsignarTurno();
-        } */       
         System.out.println("\nTurno del jugador:"+jugador+"\t\t\t\t\tRonda:"+ronda);
         System.out.println("-----------------------------------------------------------------------");
         for(int fila=0;fila<10;fila++){
@@ -131,11 +122,6 @@ public class Juego {
             System.out.print("|");
             System.out.print("\n-----------------------------------------------------------------------\n");
         }        
-        
-        /*if(turno!=null){
-            return turno;
-        }*/
-       // return 1;
        return ordenTurnos(ronda);
     }
     
@@ -158,7 +144,6 @@ public class Juego {
     }
 
     private void movimiento(int jugador) {
-        ronda = ronda + 1;
         switch(menu.menuMovimiento()){
             case 0:
                 int siguienteJugador = cambiarParametros(jugador);
@@ -170,9 +155,8 @@ public class Juego {
             case 2:              
                 moverJugador(menu.ingresarMovimiento(), jugador);
                 break;
-            default:
-                System.out.println("Seleccione alguna de las 3 opciones disponibles");
-                movimiento(jugador);
+            case -1:
+                inicializar();
         }  
     }
 
@@ -211,82 +195,100 @@ public class Juego {
                 this.jugador=jugadores[0];
                 break;
         }
-        
-        end:
-            for (int fila = 0; fila < 10; fila++) {
-                for (int columna = 0; columna < 10; columna++) {
-                    if (tablero[fila][columna].getGeneral().contains(String.valueOf(jugador))){                                                      
-                        algoritmoMovimiento(columna,fila,movimiento,jugador,jugadorMovido,jugadoresParados);
-                        organizarCasilla(columna, fila, jugadoresParados, jugador);
-                        break end;
-                    }
+        if(movimiento!=0){
+            if(movimiento>10){
+                movimientoFinal=false;
+                while(movimiento>10){
+                    generarMovimiento(10, jugadorMovido, jugadoresParados, jugador);
+                    movimiento = movimiento - 10;
                 }
+                movimientoFinal = true;
+                generarMovimiento(movimiento, jugadorMovido, jugadoresParados, jugador);
+            }else{
+                movimientoFinal = true;
+                generarMovimiento(movimiento, jugadorMovido, jugadoresParados, jugador);
             }
-        
+        }
+        ronda = ronda + 1;
         generarTablero();      
         movimiento(siguienteJugador);        
+    }
+
+    public void generarMovimiento(int movimiento, String jugadorMovido, String jugadoresParados, int jugador){
+        end:
+        for (int fila = 0; fila < 10; fila++) {
+            for (int columna = 0; columna < 10; columna++) {
+                if (tablero[fila][columna].getGeneral().contains(String.valueOf(jugador))){    
+                    algoritmoMovimiento(columna,fila,movimiento,jugador,jugadorMovido,jugadoresParados);
+                    break end;
+                }
+            }
+        }
     }
     
     public void algoritmoMovimiento(int columna, int fila,int movimiento,int jugador,String jugadorMovido, String jugadoresParados){
         int distanciaAlBorde = columna;
-        //int subir = columna+1;
         int col = 0;
-        int fil = 0;                    
+        int fil = 0;  
+        int desplazamiento = 0; 
         if(distanciaAlBorde<movimiento){
             if(distanciaAlBorde==1){
                 if(movimiento>11){
                     col=9;
                     fil=fila-2;
-                    //hacer ciclo con recursividad para movimiento mayor a 12
-                    //ejecutarMovimiento(movimiento-10, subir+1,jugadorMovido,jugador);
-                    //organizarCasilla(fila, columna, jugadoresParados, jugador);
-                   // break end;
                 }else{
                     col=columna-(movimiento-10);
                     fil=fila-1;
-                    //ejecutarMovimiento(fila+(movimiento-10), subir,jugadorMovido,jugador);
-                    //organizarCasilla(fila, columna, jugadoresParados, jugador);
-                    //break end;
                 }  
             }else if(distanciaAlBorde==0){
                 if (movimiento>10) {        
                     col=10-(movimiento-10);
-                    fil=fila-2;//revisar1
-                    //algoritmoMovimiento(0, col+1, movimiento-1, jugador, jugadorMovido, jugadoresParados);
-                    //hacer ciclo con recursividad para movimiento mayor a 12
-                    //ejecutarMovimiento(movimiento-10, columna+2,jugadorMovido,jugador);                                    
-                    //organizarCasilla(fila, columna, jugadoresParados, jugador);
+                    fil=fila-2;
                 }else{  
                     col=9-(movimiento-1);
                     fil=fila-1;
-                    //ejecutarMovimiento(movimiento-1, subir,jugadorMovido,jugador);
-                    //organizarCasilla(fila, columna, jugadoresParados, jugador);
-                    //break end;
                 }
             }else{
                 col=10-(movimiento-distanciaAlBorde);
                 fil=fila-1;
-                //ejecutarMovimiento((movimiento-distanciaAlBorde)-1, columna+1,jugadorMovido,jugador);
-                //organizarCasilla(fila, columna, jugadoresParados, jugador);
-                //break end;
             }
         }
         if(distanciaAlBorde>=movimiento){
             col=columna-movimiento;
             fil=fila;
-            //ejecutarMovimiento(fila+movimiento, columna,jugadorMovido,jugador);
-            //organizarCasilla(fila, columna, jugadoresParados, jugador);
-            //break end;
-        }    
-        end:
-        ejecutarMovimiento(col, fil,jugadorMovido,jugador);
+        }  
+        validarMovimiento(desplazamiento, columna, fila, col, fil, jugadorMovido, jugadoresParados, jugador);
+    }
+    
+    public void validarMovimiento(int desplazamiento,int columna,int fila,int col,int fil,String jugadorMovido, String jugadoresParados, int jugador){
+        if(movimientoFinal){
+            desplazamiento = verificarEscalerasOSerpientes(fil, col);
+            if(desplazamiento!=0){
+                int siguienteDesplazamiento = 0;
+                    if(verificarEscalerasOSerpientes(fil+desplazamiento, col)!=0){
+                        do{ 
+                        siguienteDesplazamiento = verificarEscalerasOSerpientes(fil+desplazamiento, col);
+                        desplazamiento=desplazamiento+siguienteDesplazamiento;
+                    }while (siguienteDesplazamiento!=0);
+                }                
+                if(fila!=(fil+desplazamiento) && columna!=col){
+                    ejecutarMovimiento(col, (fil+desplazamiento),jugadorMovido,jugador);
+                }else{
+                    ejecutarMovimiento(col, (fil+desplazamiento),jugadorMovido,jugador);
+                } 
+            }else{
+                ejecutarMovimiento(col, fil,jugadorMovido,jugador);
+            }
+        }else{
+            ejecutarMovimiento(col, fil,jugadorMovido,jugador);
+        }
+        organizarCasilla(columna, fila, jugadoresParados, jugador);
     }
     
     public void ejecutarMovimiento(int columna, int fila,String jugadorMovido,int jugador){
         verificarVictoria(columna,fila);
-        int desplazamiento = verificarEscalerasOSerpientes(columna, fila);
-        tablero[fila+desplazamiento][columna].setMoverJugador(jugadorMovido, jugador);
-        tablero[fila+desplazamiento][columna].setGeneral(tablero[fila][columna].getGeneral()+""+String.valueOf(jugador));  
+        tablero[fila][columna].setMoverJugador(jugadorMovido, jugador);
+        tablero[fila][columna].setGeneral(tablero[fila][columna].getGeneral()+""+String.valueOf(jugador));  
     }
     
     public void organizarCasilla(int columna, int fila,String jugadorParado,int jugador){
@@ -329,15 +331,13 @@ public class Juego {
         try {
             if(tablero[fila][columna].getContenido().contains("$")){
                 System.out.println("victoria");
-                inicializarMatriz();
+                partidaEnJuego=false;                        
                 inicializar();
             }  
         } catch (Exception e) {
             System.out.println("victoria");
-            inicializarMatriz();
+            partidaEnJuego=false;
             inicializar();
         }
     }
-
-    
 }
